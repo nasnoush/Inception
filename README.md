@@ -58,3 +58,9 @@ Il fonctionne en ouvrant deux connexion qui relient les 2 hotes (client et serve
 Adminer : c'est un outil qui permet de visualiser, d'editer facilement des bases de donnee via une interface conviviale.
 il contient des systeme tel que MariaDB, MySQL, SQlite, etc..
 en gros c est un gestionnaire de base de donnees.
+
+
+
+completer les docker file retirer latest
+faire les installations de chaques trucs
+faire le docker compose pour tout centraliser et le mettre dans le makefile
