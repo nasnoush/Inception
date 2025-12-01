@@ -6,8 +6,6 @@ WORKDIR /inception
 
 # COPY nginx.conf /inception/srcs/wordpress/wordpress.conf
 
-# RUN apt-get update && apt-get install -y php-mysqli
-
 RUN apk update && apk add php8-mysqli
 
 # CMD []

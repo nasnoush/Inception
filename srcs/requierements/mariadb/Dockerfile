@@ -1,5 +1,6 @@
 FROM mariadb:10.11
-# pas le droit a latest donc changer puis installer mariadb
+
+# installer maria db pas oublier
 
 WORKDIR /inception
 

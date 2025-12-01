@@ -1,9 +1,9 @@
-FROM debian:stable
+FROM debian:bookworm
 
 WORKDIR /inception
 
-COPY public_certificate.pem /requierements/nginx/public_certificate.pem
-COPY private_key.pem /requierements/nginx/private_key.pem
+COPY ./public_certificate.pem /etc/ssl/certs/cert.pem
+COPY ./private_key.pem /etc/ssl/private/key.pem
 
 COPY nginx.conf /inception/srcs/nginx/nginx.conf 
 
