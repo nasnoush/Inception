@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim
+FROM debian:bullseye-slim
 
 # installation de tout
 # - php8.2-fpm : Le moteur PHP qui va exécuter le code WordPress

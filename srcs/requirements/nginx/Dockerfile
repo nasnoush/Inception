@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim
+FROM debian:bullseye-slim
 
 RUN apt-get update && apt-get install -y \
     nginx \
@@ -17,7 +17,7 @@ RUN mkdir -p /etc/nginx/ssl
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout /etc/nginx/ssl/inception.key \
     -out /etc/nginx/ssl/inception.crt \
-    -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=nadahman.42.fr/UID=nadahman"
+    -subj "/C=CH/ST=Vaud/L=Lausanne/O=42/OU=42/CN=nadahman.42.fr/UID=nadahman"
 
 # config de nginx
 RUN mkdir -p /var/run/nginx

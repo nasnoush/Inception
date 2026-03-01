@@ -1,66 +1,51 @@
-# Inception
-Inception 42
-Doc : medium.com/@imyzf/inception-3979046d90a0
+*This project has been created as part of the 42 curriculum by nadahman.*
 
-Docker : outil qui permet de construire, deployer et exec des app de maniere isolee et coherente sur toutes les machines
-une sorte de boite externe ou on exec et ca s'adapte a toutes les machines.
+## Description
+[cite_start]This project, **Inception**, aims to broaden knowledge of system administration by using **Docker**[cite: 14]. [cite_start]The goal is to set up a small infrastructure composed of several services running in dedicated containers[cite: 74, 77]. 
+The stack includes:
+- [cite_start]**NGINX**: The only entry point via port 443 with TLSv1.2/v1.3[cite: 85, 120].
+- [cite_start]**WordPress + php-fpm**: The website engine[cite: 86].
+- [cite_start]**MariaDB**: The relational database[cite: 87].
 
-Containers : environnement virtuel leger qui conditionne toutes les dependances et le code dont une app a besoin pour s'exec dans un seul fichier
-texte et qui peut fonctionner de la meme maniere sur n'importe quelle machine.
-La difference avec une VM c'est que le conteneurs virtualise du materiel tandis qu'une Vm virtualise un systeme d'exploitation
-Les conteneurs sont plus portable etefficace.
+[cite_start]All services are virtualized using **Docker Compose** and built from the **penultimate stable version of Debian** (Bullseye)[cite: 75, 78, 81].
 
-Image Docker : c'est un package executable leger qui inclut tout ce dont l'app a besoin pour s'executer, y compris le code, l'environement d'exec,
-les outils systeme, les librairies et les dependances.
-(son utilisation ne garantie pas des perfs sans erreur mis l'utlisation de docker peut les limiter).
-On construit un Docker Image a partir d'un DOCKERFILE qui est un simple fichier texte qui contientcun ensemble d'instructions pour construire l'image.
-Chaques instruction cree un nouveau calque dans l'image.
+## Instructions
+### Compilation and Execution
+[cite_start]To set up and start the entire application, use the provided **Makefile** at the root of the directory[cite: 21, 22]:
+- `make`: Builds the Docker images and starts the containers in detached mode.
+- `make down`: Stops and removes the containers.
+- `make clean`: Stops containers and removes images.
+- `make fclean`: Full cleanup (containers, images, and persistent data volumes).
+- `make re`: Rebuilds and restarts the entire stack.
 
-DockerFile : fichier texte contient un ensemble d'instruction pour construire une image DOCKER.
-Il specifie l'image de base a utiliser, puis conprend une serie de commande qui automatise le processus de config et de construction de l'image
-comme l'instalation des paquets, la copie de fichiers et la configuration de variable d'environnement.
-Chaques instruction cree un nouveau calque dans l'image.
+### Accessing the Website
+1. [cite_start]Ensure your domain name is configured in `/etc/hosts`: `127.0.0.1 nadahman.42.fr`[cite: 111, 112].
+2. [cite_start]Open your browser and go to `https://nadahman.42.fr`[cite: 120].
 
-Docker Compose : outil qui simplifie le deploiement et ka gestion des app Docker multi-conteneurs.
-Simplifie le process de definition des services connexes, des volumes pour la persistance des donnees et des reseaux de connexion de conteneur.
-Utile pour configurer les parametres de chaques service, y compris l'image a utiliser, les ports a exposer et les variables d'environnement a definir
+## Technical Choices & Comparisons
+### Virtual Machines vs Docker
+- **Virtual Machines (VM)**: Virtualize the hardware. Each VM includes a full guest OS, making them heavy and slow to start.
+- **Docker**: Virtualizes the Operating System kernel. [cite_start]Containers share the host's kernel, making them lightweight, fast, and highly portable[cite: 213].
 
-Docker Compose : 3 parties importantes
-- SERVICES : c'est une unite de travail dans Docker Compose, il a un nom et il defini une image de conteneur, un ensemble de varable d'environnement
-et un ensemble de port qui sont expose a la machine hote
-Si on run docker-compose up, Docker va cree un nouveau conteneur pour chaque service de notre fichier Compose
+### Secrets vs Environment Variables
+- **Environment Variables**: Useful for non-sensitive configuration (e.g., domain names). However, they can be visible via `docker inspect`.
+- **Secrets**: Encrypted and only accessible to the specific service at runtime. [cite_start]They are the preferred method for sensitive data like passwords to ensure security[cite: 118, 214].
 
-- RESEAU : c'est un moyen pour les conteneurs de communiquer entre eux. Lorsque on cree un reseau de notre fichier Compose 
-Docker creera un nouveau reseau auquel tous les autres conteneurs de notre fichier Compose seront connecte.
-Ca permet aux conteneurs de communiquer entre eux sans meme connaitre l'adresse ip de l'autre. Juste avec son nom.
+### Docker Network vs Host Network
+- **Host Network**: The container shares the host's IP and ports directly. This reduces isolation.
+- **Docker Network (Bridge)**: Creates an isolated private network for containers. [cite_start]Communication is internal, and only specific ports (like 443 for NGINX) are exposed to the outside world, enhancing security[cite: 92, 100, 215].
 
-- VOLUME : C'est un moyen de stocker des donnees qui sont partagees entre les conteneurs. 
-Quand on creez un volume dans notre fichier Compose, Docker va creer un nouveau volume (un dossier d'une autre maniere) auquel
-tous les conteneurs ont acces. Ca permet de partager des donnees entre les conteneurs sans avoir a copier coller chaque fois qu'on veux une donnees.
+### Docker Volumes vs Bind Mounts
+- **Bind Mounts**: Link a specific path on the host to the container. Highly dependent on the host's file structure.
+- **Docker Volumes**: Managed by Docker. Named volumes are more portable and secure. [cite_start]In this project, we use named volumes with a bind driver to meet the requirement of storing data in `/home/nadahman/data`[cite: 88, 90, 216].
 
+## Resources
+- [Docker Documentation](https://docs.docker.com/)
+- [NGINX Documentation](https://nginx.org/en/docs/)
+- [MariaDB Documentation](https://mariadb.com/kb/en/documentation/)
 
-PID1 : c'est l'identifiant du processus init, qui est le premier processus qui est lance lorsque le systeme demarre.
-Il est responsable du demarrage et de l'arret de tout les autres processus sur le systeme.
-PID 1 dans un conteneur docker se comporte differement du process d'initialisation dans un systeme normal base sur UNIX.
-
-WP-CLI : c'est une interface en ligne de commande pour WordPress. C est un outil qui permet d'interagir avec notre site WordPress
-a partir de ligne de commande.
-On l'utilise pour automatiser des taches, des pb de debugage, l'installation / suppr des plugins en accompagnement des themes, la gestion des
-utilisateurs et des roles, l'import/export de donnees, l'exec de requete de bas de donnee..
-Il est utilisable depuis le terminal et permet de gagner beaucoup de temops pour gerer tout le site WordPress
-
-FTP : File Transfer Protocol : protocole utilise pour transferer des fichier entre un client et un serveur sur un reseau TCP/IP comme internet.
-Il fournit un mecanisme robuste permettant aux utilisateur de telecharger et gerer des fichiers sur des serveurs disant.
-Il fonctionne en ouvrant deux connexion qui relient les 2 hotes (client et serveur). une connexion pour les reponses et une pour le transfert de donnees.
-
-
-
-Adminer : c'est un outil qui permet de visualiser, d'editer facilement des bases de donnee via une interface conviviale.
-il contient des systeme tel que MariaDB, MySQL, SQlite, etc..
-en gros c est un gestionnaire de base de donnees.
-
-
-
-completer les docker file retirer latest
-faire les installations de chaques trucs
-faire le docker compose pour tout centraliser et le mettre dans le makefile
+### Use of AI
+[cite_start]AI was used in this project for the following tasks:
+- **Architecture Audit**: Verifying the compliance of the `docker-compose.yml` with the project subject.
+- **Configuration Support**: Assistance in writing specific SSL generation commands and PHP-FPM pool configurations.
+- **Documentation Structure**: Help in organizing mandatory Markdown files according to the 42 evaluation criteria.

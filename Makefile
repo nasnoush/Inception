@@ -1,21 +1,25 @@
-DOCKER_COMPOSE = srcs/docker-compose.yml
-NAME = Inception
+DOCKER_COMPOSE = ./srcs/docker-compose.yml
+LOGIN = nadahman
+DATA_PATH = /home/$(LOGIN)/data
 
 all: up
 
 up:
-	mkdir -p ~/data/mariadb
-	mkdir -p ~/data/wordpress
+	@sudo mkdir -p $(DATA_PATH)/mariadb
+	@sudo mkdir -p $(DATA_PATH)/wordpress
 	docker compose -f $(DOCKER_COMPOSE) up -d --build
 
 down:
 	docker compose -f $(DOCKER_COMPOSE) down
 
-fclean: down
-	docker volume rm srcs_db_data srcs_wp_data 2> /dev/null || true
-	rm -rf ~/data/mariadb ~/data/wordpress
-	rm -rf Inception
+clean:
+	docker compose -f $(DOCKER_COMPOSE) down --rmi all
 
-clean: down
-	docker rmi srcs-nginx srcs-wordpress srcs-mariadb || true
+fclean: clean
+	docker system prune -a --volumes -f
+	@sudo rm -rf $(DATA_PATH)
+	@echo "Nettoyage complet effectué."
 
+re: fclean all
+
+.PHONY: all up down clean fclean re
